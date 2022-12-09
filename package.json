@@ -1,0 +1,41 @@
+{
+  "name": "busanilbo",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1632432234",
+    "@mediapipe/control_utils": "^0.6.1629159505",
+    "@mediapipe/pose": "^0.5.1635988162",
+    "connect-multiparty": "^2.2.0",
+    "console-stamp": "^3.0.3",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "forever": "^4.0.3",
+    "formidable": "^2.0.1",
+    "ibm_db": "^2.8.1",
+    "moment": "^2.29.4",
+    "multer": "^1.4.4",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "node-pre-gyp": "^0.17.0",
+    "node.js": "^0.0.1-security",
+    "request": "^2.88.2",
+    "request-ip": "^3.3.0",
+    "socket.io": "^4.3.2",
+    "socket.io-client": "^4.3.2",
+    "ssh2-sftp-client": "^7.1.0",
+    "winston": "^3.8.1",
+    "winston-daily-rotate-file": "^4.7.1",
+    "wrtc": "^0.4.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "directories": {
+    "lib": "lib"
+  },
+  "description": ""
+}

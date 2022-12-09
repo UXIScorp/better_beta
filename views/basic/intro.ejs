@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<title>Better Beta</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="Generator" content="EditPlus®" />
+        <meta name="Author" content="" />
+        <meta name="Keywords" content="" />
+        <meta name="Description" content="" />        
+        <%-include('../common/header.ejs')%>		
+    </head>
+    <body>
+		<div class="wrap">
+			<div class="new_loginw">
+				<div class="l_loginbox ">
+					<div class="c_inner">
+						<div class="lbox">
+							<div class="supportInfo">
+								<p>본 시스템은 <span class="logo"><img src="/share/img/kpf-logo.png" alt="한국언론진흥재단"></span>의</p>
+								<p>지원을 받아 개발되었습니다</p>
+							</div>
+							<h1>BETTER ON</h1>
+							
+							<form id="login_frm" action="/login" method="POST" autocomplete="off">
+								<div class="lg_iputbox">
+									<input type="text" class="mb1rem" id="input_nm" name="input_nm" placeholder="참여자 이름 (닉네임)" title="이름을 입력해주세요">
+									<input type="text" class="" id="input_rm" name="input_rm" placeholder="방번호 (4자리)" title="방번호를 입력해주세요" value="<%= roomcode %>">
+									<input id="loginbtn" type="submit" class="loginbtn" value="참여하기"/>
+								</div>
+								<div class="lbox r_date" style = "display: none;"></div>
+								<a id="login_a" class="new_make" href="#" onclick="makeRoom()">새로운 방만들기</a>
+							</form>
+						</div>
+					</div>
+				</div>
+				<%
+					var today_s = "";
+					var today_e = "";
+					if(regi_time != null){
+						today_s = regi_time;
+					}else{					
+						var today_y = new Date().getFullYear();
+						var today_m = new Date().getMonth() + 1;
+						if(today_m < 10){
+							today_m = "0" + today_m;
+						}
+						today_s = today_y + "-" + today_m + "-" + "01";
+					}
+					if(drop_time != null){
+						today_e = drop_time;
+					}else{
+						var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+						var today_e_date = "31";
+						for(var m=0; m < months.length; m++){
+							if(m == 3 || m == 5 || m == 8 || m == 10){
+								if(today_m == months[m]){
+									today_e_date = "30";
+								}
+							}else if(m == 1 && today_m == months[m]){
+								if(today_y % 4 == 0){
+									today_e_date = "29";
+								}else{
+									today_e_date = "28";
+								}
+							}
+						}
+						today_e = today_y + "-" + today_m + "-" + today_e_date;
+					}
+				%>
+				<div class="r_contbox">
+					<div class="t_tblst">
+						<div class="sel_box">
+							<p class="tit">방 목록</p>
+							<form id="sch_frm" action="/search_date" method="post">
+							<div class="datepic_w">
+								<div class="datepic_ipbox">
+									<div class="dpic_ip">
+										<input type="text" placeholder="" class="datepicker" title="회의일정" name="regi_time" value="<%= today_s %>" readonly="" id="">
+									</div>
+									<span>-</span>
+									<div class="dpic_ip">
+										<input type="text" placeholder="" class="datepicker" title="회의일정" name="drop_time" value="<%= today_e %>" readonly="" id="">
+									</div>
+								</div>
+								<button class="selbtn">검색</button>	
+							</div>
+							</form>
+						</div>
+						<div class="headFix-wrap scrCustom">
+							<table class="headFix">
+								<colgroup>
+									<col class="width_ty">
+									<col class="width_ty03">
+									<col class="width_ty02">
+									<col class="width_ty02">
+									<col class="width_ty01">
+									<col class="width_ty01">
+								</colgroup>							
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>개설자(방번호)</th>
+										<th>회의 시작일시</th>
+										<th>회의 종료일시</th>
+										<th>회의시간</th>
+										<th>최대 입장 수</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% 
+									for(var i=0; i < roomList.length; i++) { 
+										if(roomList[i].drop_time == null || roomList[i].drop_time == "" || roomList[i].drop_time == 'undefined'){
+											var drop_time = '데이터없음';
+											var diff = '측정불가';
+										}else{
+											var diff_i = Math.floor((new Date(roomList[i].drop_time).getTime() - new Date(roomList[i].regi_time).getTime()) / 1000 / 60);
+											var diff_s = (new Date(roomList[i].drop_time).getTime() - new Date(roomList[i].regi_time).getTime()) / 1000 % 60;
+
+											var diff = diff_i + "분 " + diff_s + "초";
+										
+											var regi_time_y = new Date(roomList[i].regi_time).getFullYear();
+											var regi_time_m = new Date(roomList[i].regi_time).getMonth() + 1;
+											if(regi_time_m < 10){
+												regi_time_m = "0" + regi_time_m;
+											}
+											var regi_time_d = new Date(roomList[i].regi_time).getDate();
+											if(regi_time_d < 10){
+												regi_time_d = "0" + regi_time_d;
+											}
+											var regi_time_h = new Date(roomList[i].regi_time).getHours();
+											if(regi_time_h < 10){
+												regi_time_h = "0" + regi_time_h;
+											}
+											var regi_time_i = new Date(roomList[i].regi_time).getMinutes();
+											if(regi_time_i < 10){
+												regi_time_i = "0" + regi_time_i;
+											}
+											var regi_time_s = new Date(roomList[i].regi_time).getSeconds();
+											if(regi_time_s < 10){
+												regi_time_s = "0" + regi_time_s;
+											}
+											var regi_time = regi_time_y + "-" + regi_time_m + "-" + regi_time_d + " " + regi_time_h + ":" + regi_time_i + ":" + regi_time_s;
+											var drop_time_y = new Date(roomList[i].drop_time).getFullYear();
+											var drop_time_m = new Date(roomList[i].drop_time).getMonth() + 1;
+											if(drop_time_m < 10){
+												drop_time_m = "0" + drop_time_m;
+											}
+											var drop_time_d = new Date(roomList[i].drop_time).getDate();
+											if(drop_time_d < 10){
+												drop_time_d = "0" + drop_time_d;
+											}
+											var drop_time_h = new Date(roomList[i].drop_time).getHours();
+											if(drop_time_h < 10){
+												drop_time_h = "0" + drop_time_h;
+											}
+											var drop_time_i = new Date(roomList[i].drop_time).getMinutes();
+											if(drop_time_i < 10){
+												drop_time_i = "0" + drop_time_i;
+											}
+											var drop_time_s = new Date(roomList[i].drop_time).getSeconds();
+											if(drop_time_s < 10){
+												drop_time_s = "0" + drop_time_s;
+											}
+											drop_time = drop_time_y + "-" + drop_time_m + "-" + drop_time_d + " " + drop_time_h + ":" + drop_time_i + ":" + drop_time_s;
+										}
+									%>
+									<tr>
+										<td><%= roomList.length - i %></td>
+										<td><%= roomList[i].host_id %>(<%= roomList[i].room_id %>)</td>
+										<td><%= regi_time %></td>
+										<td><%= drop_time %></td>
+										<td><%= diff %></td>
+										<td>
+											<span><%= roomList[i].cnt %></span>명
+										</td>
+									</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="b_chartlst">
+						<div class="chartbox l_ct_rod">
+							<p class="tit">회의별 회의시간</p>
+							<div class="c_inbox">
+								<canvas id="barchart"></canvas>
+							</div>
+						</div>
+						<div class="chartbox r_ct_line">
+							<p class="tit">최대 입장 수</p>
+							<div class="c_inbox">
+								<canvas id="linechart"></canvas>
+							</div>
+						</div>
+					</div>
+                    <%
+                        if(typeof success !== "undefined"){
+                            if(success == 'false_input'){
+                    %>
+                    <script>
+                        alert('닉네임 또는 방번호를 입력해주세요.');
+                    </script>
+                    <%
+                            }else if(success == 'false_room'){
+                    %>
+                    <script>
+                        alert('해당하는 방이 없습니다.');
+                    </script>
+                    <%
+                            }else if(success == 'false_duplicated'){
+                    %>
+                    <script>
+                        alert('중복된 이름이 존재합니다.');
+                    </script>
+                    <%
+                            }else if(success == 'false_nick'){
+                    %>
+                    <script>
+                        alert('닉네임 또는 방번호를 입력해주세요.');
+                    </script>
+                    <%
+                            }
+                        }
+                    %>
+                    
+					<script>
+                        function roomIdGenerate(){
+                            var roomNumber = Math.random().toString(10).substr(2, 4);
+                            
+                            var rN = document.getElementById('input_rm');
+                            rN.setAttribute('name','new_room_id');
+                            rN.setAttribute('placeholder',`방번호 : ${roomNumber} (변경 가능)`);
+                            
+                            var roomIdTag = document.createElement('input');
+                            roomIdTag.setAttribute('type', 'hidden');
+                            roomIdTag.setAttribute('id', 'room_id_old');
+                            roomIdTag.setAttribute('name', 'room_id_old');
+                            roomIdTag.setAttribute('value', roomNumber);
+                            document.getElementsByClassName('lbox r_date')[0].appendChild(roomIdTag);
+                        }
+
+                        function roomIdRollback(){
+                            var rN = document.getElementById('input_rm');
+                            rN.setAttribute('name','input_rm');
+                            rN.setAttribute('placeholder',`방번호 (4자리)`);
+                            
+                            var roomIdTag = document.getElementById('room_id_old');
+                            roomIdTag.remove();
+                        }
+
+                        function makeRoom(){
+                            var frm = document.getElementById('login_frm');
+                            frm.action = '/meeting';
+                            var loginbtn = document.getElementById('loginbtn');
+                            loginbtn.value = '방만들기';
+							loginbtn.classList.add('makeroom');
+                            var login_a = document.getElementById('login_a');
+                            login_a.innerText = '참여하기로 돌아가기';
+                            login_a.removeAttribute('onclick');
+                            login_a.setAttribute('onclick', 'loginRoom()');
+                            console.log(frm);
+                            roomIdGenerate();
+                        }
+
+                        function loginRoom(){
+                            var frm = document.getElementById('login_frm');
+                            frm.action = '/login';
+                            var loginbtn = document.getElementById('loginbtn');
+                            loginbtn.value = '참여하기';
+							loginbtn.classList.remove('makeroom');
+                            var login_a = document.getElementById('login_a');
+                            login_a.innerText = '새로운 방만들기';
+                            login_a.removeAttribute('onclick');
+                            login_a.setAttribute('onclick', 'makeRoom()');
+                            console.log(frm);
+                            roomIdRollback();
+                        }
+
+						var room_arr = '<%= rooms %>';
+						room_arr = room_arr.split(',');
+
+						var time_arr = '<%= times %>';
+						time_arr = time_arr.split(',');
+
+						var cnt_arr = '<%= cnts %>';
+						cnt_arr = cnt_arr.split(',');
+						
+						function Bar_chart_Fn(){
+							Chart.defaults.font.family = 'Noto Sans KR';
+							Chart.defaults.font.size = '10';
+							var chartArea = document.getElementById('barchart').getContext('2d');
+
+							var myChart = new Chart(chartArea, {
+								type: 'bar',
+								data: {
+									labels: room_arr,
+									datasets: [{
+										label: '회의시간(분)',
+										data: time_arr,
+										backgroundColor: 'rgba(11, 81, 214, 1)',
+										maxBarThickness: 10,
+									}]
+								},
+								options: {
+									scales: {
+										x: {
+											grid: {
+											drawOnChartArea:false
+											}
+										},
+									},
+								}
+							});
+							
+						};
+						Bar_chart_Fn();
+
+						function line_chart_Fn(){
+							Chart.defaults.font.family = 'Noto Sans KR';
+							Chart.defaults.font.size = '10';
+							var chartArea = document.getElementById('linechart').getContext('2d');
+
+							var myChart = new Chart(chartArea, {
+								type: 'line',
+								data: {
+									labels: room_arr,
+									datasets: [{
+										label: '입장 수(명)',
+										data: cnt_arr,
+										borderColor:'rgba(247, 186, 0, 1)',
+										borderWidth: 3,
+										radius: 0,
+									}]
+								},
+								options: {
+									scales: {
+										x: {
+											grid: {
+											drawOnChartArea:false
+											}
+										},
+									},
+									interaction: {
+										intersect: false,
+										mode: 'index',
+									},
+								},
+									
+							});
+						};
+						line_chart_Fn();						
+					</script>
+				</div>
+			</div>			
+		</div>
+
+		
+    </body>
+</html>

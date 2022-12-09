@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="Generator" content="EditPlus®" />
+        <meta name="Author" content="" />
+        <meta name="Keywords" content="" />
+        <meta name="Description" content="" />
+        <title>Better Beta</title>
+        
+        <%-include('../common/header.ejs')%>
+    </head>
+	<style>
+		#chk{
+			font-size:2vh;
+			font-weight:bold;
+			color:#ed6353;
+			text-align:center;
+			margin-top:2vh;
+			margin-bottom:2vh;
+		}
+	</style>
+    <body>
+		
+        <div class="wrap login">
+			<div class="inwrap">
+				<div class="login_w">
+					<h1 class="logo" style="font-size:5vh; font-weight:bold;">
+						Better Beta
+					</h1>
+					<form action="/meeting" method="POST" onsubmit="checkFrm();" autocomplete="off">
+			
+						<div class="login_box">
+							
+							<div class="lbox">
+								<input type="text" id="input_nm" name="input_nm" class="login_input" placeholder="참여자 이름" title="참여자 이름을 입력해주세요">
+							</div>
+							<div class="lbox">
+								<input type="text" id="roomNumber"  class="login_input" title="변경할 방번호를 입력해주세요">
+							</div>
+							
+							<div class="lbox r_date" style = "display: none;">
+							</div>
+							<div id="chk" style="display:none;"></div>
+							<div class="new_txt">
+								<p>생성된 방번호를 통해 입장 가능하니<br/>참여자와 공유하시기 바랍니다.</p>
+							</div>
+							<div class="lbox sel_btn">
+								<input type="submit" value="만들기">
+								<a href="../" class="cancel">취소</a>
+							</div>
+						</div>
+					</form>					
+				</div>
+			</div>
+		</div>
+	<%
+		if(typeof success !== "undefined"){
+			if(success == 'false_nick'){
+	%>
+	<script>
+		var chk = document.getElementById('chk');
+		chk.innerText = '닉네임 또는 방번호를 입력해주세요.';
+		chk.style.display = "block";
+	</script>
+    </body>
+	<script src="/js/basic/select_new.js"></script>
+</html>

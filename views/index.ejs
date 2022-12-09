@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="Generator" content="EditPlus®" />
+        <meta name="Author" content="" />
+        <meta name="Keywords" content="" />
+        <meta name="Description" content="" />
+        <title>Better Beta</title>
+        
+		<!--css-->
+        <link rel="stylesheet" href="/share/css/reset.css" />
+        <link rel="stylesheet" href="/share/css/font.css" />
+        <link rel="stylesheet" href="/share/css/layout.css" />
+        <link rel="stylesheet" href="/share/css/jquery.scrollbar.css" />
+		<link rel="stylesheet" href="/share/css/slick.css" />
+		<style>
+			video::-webkit-media-controls {display:none !important;}
+		</style>
+        
+		<!--js-->
+        <script src="/socket.io/socket.io.js"></script>
+		<script src="/lib/jquery-3.4.1.min.js"></script>
+		<script src="/lib/slick.min.js"></script>
+		<script src="/lib/jquery.scrollbar.min.js"></script>
+		<script src="/lib/layout.js"></script>
+		<script src="/lib/hark.bundle.js"></script>
+
+		<!--mediapipe-->
+		<script src="/node_modules/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+	
+	<div class="layerPop-wrap" id="manual-layerPop">
+		<div class="layerPop-flex">
+			<div class="layerPop">
+				<div class="layerPop-title">
+					<h2>사용 매뉴얼</h2>
+					<button type="button" class="layerPop-close layerpop-closeFn"><span class="icon"></span><span class="a11y">팝업 닫기</span></button>
+				</div>
+				<div class="layerPop-cont">
+					<img src="../share/img/menualImg.png" alt="">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="layerPop-wrap" id="invite-layerPop">
+		<div class="layerPop-flex">
+			<div class="layerPop">
+				<div class="layerPop-title">
+					<h2>초대하기</h2>
+					<button type="button" class="layerPop-close layerpop-closeFn"><span class="icon"></span><span class="a11y">팝업 닫기</span></button>
+				</div>
+				<div class="layerPop-cont">
+					<div id="invite_div">
+					    <div class="topT">
+						<h3>화상회의 초대</h3>
+						<p>https:///?roomcode=<%=roomId%></p>
+						<p>방번호 : <%= roomId %></p>
+					    </div>
+					    <div class="midT">
+							<p class="tlst_t">- 참여방법</p>
+							<ul>
+								<li>1) 주소로 이동해주세요</li>
+								<li>2) 닉네임을 입력해주세요</li>
+								<li>3) 입장하기 버튼을 눌러주세요</li>
+							</ul>
+							<p class="tlst_t">- 안내사항</p>
+							<p class="sif_txt"><i class="ri-error-warning-fill"></i>PC사용자는 화상CAM과 마이크가 있어야 입장 할 수 있습니다</p>
+						</div>
+					</div>
+					<div class="copyT">
+						<a href="#" onclick="copyInvite()">복사하기</a>
+					</div>
+					
+					<script>
+					    function copyInvite(){
+						var content = document.getElementById('invite_div').innerText;
+
+						navigator.clipboard.writeText(content)
+						    .then(() => {
+						    alert('클립보드에 복사되었습니다. 사용하는 메신저에서 붙여넣기 해주세요.');
+						})
+						    .catch(err => {
+						    console.log('Something went wrong', err);
+						})
+					    }
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<p id="roomId" style="display:none"><%= roomId %></p>
+	<p id="loginId" style="display:none"><%= loginId %></p>
+	<div class="wrap view">
+		<div class="header">
+			<h1 class="logo">Better On</h1>
+			<div class="info-person">
+				<div class="d_ib first">
+					<p class="people">방번호 : <%= roomId %></p>
+				</div>
+				<div class="d_ib">
+					<p class="people">현재 참여인원</p>
+					<p class="people_nm"><span><i class="ri-account-circle-fill"></i></span><span id="user_count"> 명</span></p>
+				</div>
+			</div>
+			<div class="utill b_right">
+				<a href="#n" class="utill-btn" onclick="$('#manual-layerPop').modal('show')">
+					<i class="ri-question-line"></i>
+					<span class="name">매뉴얼</span>
+				</a>
+				<a href="#n" class="utill-btn menuicon">
+					<i class="ri-settings-3-line"></i>
+					<span class="name">설정</span>
+				</a>
+				<a href="javascript:void(0)" type="button" onclick="setAllAudioMute();" class="utill-btn allmute">
+					<i class="ri-volume-down-fill"></i>
+					<i class="ri-volume-mute-fill onIcon"></i>
+					<span class="name">전체음소거</span>
+				</a>
+				<div class="d_flex d_flex_at recode_w">
+					<a href="javascript:void(0)" type="button" class="utill-btn" id="record_set" onclick="recordWhole(this);">
+						<i class="ri-record-mail-fill"></i>
+						<span class="name">녹화</span>
+					</a>
+					<span class="clock"></span>
+				</div>
+				<a href="#n" type="button" onclick="$('#invite-layerPop').modal('show')" class="utill-btn off" data-tooltip="초대하기">
+					<i class="ri-link"></i>
+					<span class="name">초대</span>
+				</a>
+				<a href="javascript:void(0)" type="button" onclick="shareStart();" class="utill-btn share off" data-tooltip="화면공유">
+					<i class="ri-slideshow-3-fill"></i>
+					<span class="name">화면공유</span>
+				</a>
+				<a href="javascript:void(0)" type="button" class="utill-btn chat off right_btn" data-tooltip="채팅" data-name="chat_box">
+					<i class="ri-message-2-line"></i>
+					<span class="name">채팅</span>
+				</a>					
+				<a href="javascript:void(0)" type="button" class="utill-btn disconnect"  id="disconnect" onclick="onExit()" data-tooltip="나가기">
+					<i class="ri-logout-box-r-line"></i>
+					<span class="name">나가기</span>
+				</a>
+			</div>
+		</div>
+		<div class="chat_box right_pop">
+			<div class="tit">
+				<div class="btit"><span>채팅</span></div>
+				<div class="close"><span>채팅창 닫기</span><img src="/share/img/close_b.png" alt="close_icon"></div>
+			</div>
+			<div class="line"></div>
+			<div class="p_info">
+				<div id="chatPop_scroll">
+					<div class="part_p cont">
+						<ul class="chat_w" id="chat_inners">
+						</ul>
+					</div>
+				</div>						
+			</div>
+			<div class="send_box">
+				<div class="progress"></div>
+				<div class="c_target">모두에게</div>
+				<div class="txt_b">
+					<textarea id ="msg_box" onkeyup="enterkey()" placeholder="메세지를 입력하세요" maxlength="100"></textarea>
+				</div>
+				<div class="btn_b">
+					<div class="file">
+						<a id="btn_send" class="btn" input type="button" onclick="select_file();" style="cursor:pointer">파일</a>
+						<form id="btn_file" action="/send-file" method="post" target="if" enctype="multipart/form-data">
+							<input type="hidden" name="file_roomid">
+							<input type="file" name="uploadFile" style ='display:none' onchange="show_file(this);" multiple="multiple">
+							<input type="submit" name="btn_submit" style="display:none">
+						</form>
+						<iframe name="if" style="display:none"></iframe>
+					</div>
+					<div class="send">
+						<button id="btn_sendMsg" type="button" onclick="checkType();" style="cursor:pointer;">채팅전송</button>
+					</div>
+				</div>
+				<form name='fileform' action="/download" method="post" target="if">
+					<input type="hidden" name="filename"/>
+				</form>
+			</div>
+		</div>
+
+		<div class="cont">
+			<div class="inner">
+				<ul id="vid_ul" class="">
+					<% for(var i=0; i < 12; i++){ %>						
+					<li class="room_users_on" style="display:none;">
+						<div class="v_view off">
+							<input type="hidden" class="s_id">
+							<input type="hidden" class="m_id">
+							<video class='stream_off' id='' playsinline="true" autoplay ondblclick="fullScreen(this);"></video>
+							<div><a class="mute_div"></a></div>
+							<div><a class="cam_div"></a></div>
+						</div>
+						<div class="v_btn">
+							<div class="info_ctxt">
+								<button type="button" class="nicknmBtn">
+									<i class="micicon off"></i>
+									<span class="nicknm">off</span>
+								</button>
+							</div>
+							<div class="info_ctxt02">
+								<button type="button" class="label cameraswitch">
+									<i class="ri-camera-switch-fill"></i>
+								</button>
+								<button type="button" class="label camera" onclick="setTargetVideoMute(this);">
+									<i class="ri-camera-fill on"></i>
+									<i class="ri-camera-off-fill off"></i>
+								</button>
+								<button type="button" class="label mic" onclick="setTargetAudioMute(this);">
+									<i class="ri-volume-down-fill on"></i>
+									<i class="ri-volume-mute-fill off"></i>
+								</button> 
+								<button type="button" class="label reversscreen" onclick="reverseScreenT(this)">
+									<i class="ri-arrow-left-right-line"></i>
+								</button>
+								<button type="button" class="label fullscreen" onclick="fullScreen(this);">
+									<i class="ri-fullscreen-fill"></i>
+								</button>
+							</div>
+						</div>
+					</li>	
+					<% } %>					
+				</ul>
+			</div>
+		</div>		
+
+		<div class="footer">
+			<div class="supportInfo">
+				<p>본 시스템은 <span class="logo"><img src="/share/img/kpf-logo.png" alt="한국언론진흥재단"></span>의</p>
+				<p>지원을 받아 개발되었습니다</p>
+			</div>
+		</div>			
+	</div>
+
+	<div class="menu menuPop">
+		<div class="menu_tbl">
+			<div class="inner">
+				<div class="menubox">
+					<div class="cancel">
+						<img src="/share/img/menu_cancel.png" alt="닫기버튼" class="cancelicon"/>
+					</div>
+					<h1>Better Beta (no.<%= roomId %>)</h1>
+					<ul class="setting_w">
+						<li>
+							<div class="info">
+								<h3>내 이름</h3>
+							</div>
+							<div class="nicknmSet_box">
+								<input id="change_nm" type="text" placeholder="닉네임 입력" value="<%= loginId %>">
+								<button type="button" onclick="changeNm(this);">저장</button>
+							</div>
+						</li>
+						<li>
+							<div class="info">
+								<h3>카메라</h3>
+							</div>
+							<select name="camera" id="videoinput" onchange="changeDevice();">
+							</select>
+						</li>
+						<li>
+							<div class="info">
+								<h3>화질</h3>
+							</div>
+							<select name="pixel" id="videoQuality" onchange="changeDevice();">
+								<option value="320x240" selected>QVGA(320x240)</option>
+								<option value="640x480">VGA(640x480)</option>
+								<option value="1280x720">HD(1280x720)</option>
+								<option value="1920x1080">FHD(1920x1080)</option>
+							</select>
+						</li>
+						<li>
+							<div class="info">
+								<h3>마이크</h3>
+							</div>
+							<select name="mic" id="audioinput" onchange="changeDevice();">
+							</select>
+							<div class="volume_mic">
+								<div class="mic_icon"><img src="/share/img/mic_icon.png" alt="mic_icon"></div>
+								<input type="range" id="micVolume" name="micVolume" min="0" max="1" step="0.01" onchange="changeDevice();" oninput="value=this.value">
+							</div>
+						</li>
+						<li>
+							<div class="info">
+								<h3>소리</h3>
+							</div>
+							<select name="sound" id="audiooutput" onchange="attachSinkId();">
+							</select>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>    
+	</div>
+
+	<div class="menu cameramenuPop">
+		<div class="menu_tbl">
+			<div class="inner">
+				<div class="menubox">
+					<div class="cancel">
+						<img src="/share/img/menu_cancel.png" alt="닫기버튼" class="cancelicon"/>
+					</div>
+					<ul class="setting_w" style="margin-top:30px;">
+						<li>
+							<div class="info">
+								<h3>전/후 카메라 선택</h3>
+							</div>
+							<select name="camera" id="videoinput2" onchange="changeDevice();">
+							</select>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>    
+	</div>
+ 
+	<div class="sharing_nope"><p>PC 화면</p><p>공유 중</p><p>입니다</p><a href="#" onclick="end_share();">종료하기</a></div>
+	<div class="capture"></div>
+	<script>
+		function Mobile() {return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);}
+		if(Mobile()){
+			alert('휴대폰은 마이크/소리 설정기능을 제공하지 않습니다.');
+		}
+	</script>    
+                
+	<script src="/js/cmmUtil.js"></script>
+	<script src="/js/share.js"></script>
+	<script src="/js/message.js"></script>
+	<script src="/js/sendFile.js"></script>
+	<script src="/js/record.js"></script> 
+	<script src="/js/changeDevice.js"></script>
+	<script src="/js/p2p.js"></script>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<title>Better Beta</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="Generator" content="EditPlus®" />
+        <meta name="Author" content="" />
+        <meta name="Keywords" content="" />
+        <meta name="Description" content="" />        
+        <%-include('../common/header.ejs')%>		
+    </head>
+    <body>
+		<div class="wrap">
+			<div class="new_loginw">
+				<div class="l_loginbox noRight">
+					<div class="c_inner">
+						<div class="lbox">
+							<div class="supportInfo">
+								<p>본 시스템은 <span class="logo"><img src="/share/img/kpf-logo.png" alt="한국언론진흥재단"></span>의</p>
+								<p>지원을 받아 개발되었습니다</p>
+							</div>
+							<h1>BETTER ON</h1>
+							
+							<form id="login_frm" action="/login" method="POST" autocomplete="off">
+								<div class="lg_iputbox">
+									<input type="text" class="mb1rem" id="input_nm" name="input_nm" placeholder="참여자 이름 (닉네임)" title="이름을 입력해주세요">
+									<input type="text" class="" id="input_rm" name="input_rm" placeholder="방번호 (4자리)" title="방번호를 입력해주세요" value="<%= roomcode %>">
+									<input id="loginbtn" type="submit" class="loginbtn" value="참여하기"/>
+								</div>
+								<div class="lbox r_date" style = "display: none;"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+    </body>
+</html>
