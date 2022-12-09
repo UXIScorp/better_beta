@@ -10,4 +10,5 @@ PMO의 의뢰로 UXIS에서 제작한 WebRTC기반 화상회의 서비스입니�
  - yum install nodejs
 2. SSL 인증파일을 업로드한 후, 루트 경로의 server.js파일 10번 라인에 있는 options 부분에 SSL 인증파일 경로를 지정합니다.
 3. /js/p2p.js를 열어 1번 라인의 socket 부분에 도메인 정보를 입력하고, 15번 라인의 config 부분에 턴서버 정보를 입력합니다.(턴서버 구축은 검색 참조)
-4. 루트 경로에서 server.js를 실행합니다.
+4. /DB/db.js를 열어 데이터베이스 정보를 입력합니다.
+5. 루트 경로에서 server.js를 실행합니다.
