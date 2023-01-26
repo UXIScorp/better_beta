@@ -1,5 +1,5 @@
 # better_beta
-P2P WebRTC(presented by PMO, UXIS)
+P2P WebRTC(presented by UXIS)
 
 PMO의 의뢰로 UXIS에서 제작한 WebRTC기반 화상회의 서비스입니다.
 
